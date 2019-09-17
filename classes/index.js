@@ -1,6 +1,6 @@
 'use strict';
 
-const { createVehicle, Vehicle, Car, Motorcycle } = require('./vehicle-constructor.js');
+const {Car, Motorcycle } = require('./vehicle-constructor.js');
 
 // Implement a car and motorcycle using a Constructor
 const mazda = new Car('Mazda 3');
