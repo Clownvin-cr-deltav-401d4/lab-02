@@ -1,89 +1,81 @@
 'use strict';
 
-let validator = {};
+class Validator {
+  constructor() {
+    throw new Error('Cannot instantiate type Validator.');
+  }
 
-/**
- * Based on a set of rules, is the input valid?
- * TODO: Define the rules ... how do we send them in? How do we identify?
- * @param input
- * @param rules
- * @returns {boolean}
- */
-validator.isValid = (input, rules) => {
-  return true;
-};
-
-/**
+  /**
  * Is this a string?
  * @param input
  * @returns {boolean}
  */
-validator.isString = (input) => {
-  return typeof input === 'string';
-};
-
-validator.isObject = (input) => {
-  return typeof input === 'object' && !(input instanceof Array);
-};
-
-validator.isArray = (input, valueType) => {
-  return Array.isArray(input) && (valueType ? input.every( val => typeof val === valueType ) : true);
-};
-
-validator.isBoolean = (input) => {
-  return typeof input === 'boolean';
-};
-
-validator.isNumber = (input) => {
-  return typeof input === 'number';
-};
-
-validator.isFunction = (input) => {
-  return typeof input === 'function';
-};
-
-validator.isTruthy = (input) => {
-  return !!input;
-};
-
-validator.isCorrectType = (input, field) => {
-  switch(field.type) {
-  case 'string': return validator.isString(input);
-  case 'number': return validator.isNumber(input);
-  case 'array': return validator.isArray(input, field.valueType);
-  case 'object': return validator.isObject(input);
-  case 'boolean': return validator.isBoolean(input);
-  default: return false;
+  static isString(input) {
+    return typeof input === 'string';
   }
-};
 
-validator.isValid = (schema,data) => {
+  static isObject(input) {
+    return typeof input === 'object' && !(input instanceof Array);
+  }
 
-  let valid = true;
+  static isArray(input, valueType) {
+    return Array.isArray(input) && (valueType ? input.every(val => typeof val === valueType) : true);
+  }
 
-  for (let fieldName in schema.fields) {
+  static isBoolean(input) {
+    return typeof input === 'boolean';
+  }
 
-    let field = schema.fields[fieldName];
+  static isNumber(input) {
+    return typeof input === 'number';
+  }
 
-    // Am I required and set?
-    let required = field.required
-      ? validator.isTruthy(data[fieldName])
-      : true;
+  static isFunction(input) {
+    return typeof input === 'function';
+  }
+
+  static isTruthy(input) {
+    return !!input;
+  }
+
+  static isCorrectType(input, field) {
+    switch (field.type) {
+    case 'string': return Validator.isString(input);
+    case 'number': return Validator.isNumber(input);
+    case 'array': return Validator.isArray(input, field.valueType);
+    case 'object': return Validator.isObject(input);
+    case 'boolean': return Validator.isBoolean(input);
+    default: return false;
+    }
+  }
+
+  static isValid(schema, data) {
+
+    let valid = true;
+
+    for (let fieldName in schema.fields) {
+
+      let field = schema.fields[fieldName];
+
+      // Am I required and set?
+      let required = field.required
+        ? Validator.isTruthy(data[fieldName])
+        : true;
 
       // Am I the right type (if we even care)
-    let type = field.type
-      ? validator.isCorrectType(data[fieldName], field)
-      : true;
+      let type = field.type
+        ? Validator.isCorrectType(data[fieldName], field)
+        : true;
 
       // If anything is false ...
-    if (!(required && type)) {
-      valid = false;
+      if (!(required && type)) {
+        valid = false;
+      }
+
     }
-
+    return valid;
   }
+}
 
-  return valid;
-};
-
-module.exports = validator;
+module.exports = Validator;
 
